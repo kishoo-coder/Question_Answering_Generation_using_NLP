@@ -1,0 +1,44 @@
+keyword extraction 
+keyphrase ectraction (btl3 goml mohema) 
+(stopwords) -> (am - i - is - the)
+(puncitiautios) -> (! @ # $ % ^ & * )
+skiping -> ing - es - s - ed - ied
+limitization -> asl el kelma  
+QG models 
+-T5 (multitasking model)
+process: 
+	data COLLECTION -> data preprocessing -> key-phrase extraction -> question generation
+-GPT-2  
+python key phrase extraction(library)
+(key phrase) -> https://github.com/boudinfl/pke
+https://regexr.com/
+https://www.analyticsvidhya.com/blog/2021/06/text-preprocessing-in-nlp-with-python-codes/
+
+//
+from transformers import AutoModelWithLMHead, AutoTokenizer
+import sentencepiece
+
+from transformers import AutoTokenizer, T5ForConditionalGeneration
+
+model_name = "iarfmoose/t5-base-question-generator" # you can specify the model size here
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = T5ForConditionalGeneration.from_pretrained(model_name)
+
+# tokenizer = AutoTokenizer.from_pretrained("iarfmoose/t5-base-question-generator")
+# model = AutoModelWithLMHead.from_pretrained("iarfmoose/t5-base-question-generator")
+
+def get_question(answer, context, max_length=64):
+  input_text = "answer: %s  context: %s </s>" % (answer, context)
+  features = tokenizer([input_text], return_tensors='pt')
+
+  output = model.generate(input_ids=features['input_ids'], 
+               attention_mask=features['attention_mask'],
+               max_length=max_length)
+
+  return tokenizer.decode(output[0])
+
+context = "Manuel has created RuPERTa-base with the support of HF-Transformers and Google"
+answer = "Manuel"
+
+get_question(answer, context)
+//
